@@ -12,8 +12,6 @@ import { useNuxtApp } from "#imports"
 
 import { computed } from "vue"
 
-import { useAnalytics } from "~/composables/use-analytics"
-
 import VIcon from "~/components/VIcon/VIcon.vue"
 
 type InternalLinkProps = { to: string }
@@ -68,7 +66,8 @@ function checkHref(p: typeof props): p is {
 } {
   return typeof p.href === "string" && !["", "#"].includes(p.href)
 }
-const localePath = useNuxtApp().$localePath
+
+const { $localePath, $sendCustomEvent } = useNuxtApp()
 
 const isInternal = computed(
   () => checkHref(props) && props.href.startsWith("/")
@@ -88,7 +87,7 @@ const to = computed(() => {
   if (checkHref(props)) {
     if (props.href.startsWith("/")) {
       // Internal link should link to the localized page
-      return localePath(props.href) ?? props.href
+      return $localePath(props.href) ?? props.href
     } else {
       return props.href
     }
@@ -96,8 +95,6 @@ const to = computed(() => {
   // if href is undefined, return props that make the link disabled
   return undefined
 })
-
-const { sendCustomEvent } = useAnalytics()
 
 const handleClick = (e: MouseEvent) => {
   emit("click", e)
@@ -108,7 +105,7 @@ const handleClick = (e: MouseEvent) => {
   ) {
     return
   }
-  sendCustomEvent("EXTERNAL_LINK_CLICK", {
+  $sendCustomEvent("EXTERNAL_LINK_CLICK", {
     url: props.href,
   })
 }

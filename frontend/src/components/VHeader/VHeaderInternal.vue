@@ -90,8 +90,9 @@ import { useRoute } from "#imports"
 
 import { computed, defineComponent, ref, watch } from "vue"
 
+import { useNuxtApp } from "#app"
+
 import { useDialogControl } from "~/composables/use-dialog-control"
-import { useAnalytics } from "~/composables/use-analytics"
 import { useHydrating } from "~/composables/use-hydrating"
 import usePages from "~/composables/use-pages"
 
@@ -126,7 +127,7 @@ export default defineComponent({
 
     const route = useRoute()
 
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
 
     const { all: allPages, current: currentPage } = usePages()
 
@@ -161,7 +162,7 @@ export default defineComponent({
 
     const eventedOnTriggerClick = () => {
       if (!isModalVisible.value) {
-        sendCustomEvent("OPEN_PAGES_MENU", {})
+        $sendCustomEvent("OPEN_PAGES_MENU", {})
       }
       return onTriggerClick()
     }

@@ -42,6 +42,8 @@
 </template>
 
 <script lang="ts">
+import { useNuxtApp } from "#imports"
+
 import { computed, defineComponent, inject, ref } from "vue"
 
 import { useMediaStore } from "~/stores/media"
@@ -50,7 +52,6 @@ import { useUiStore } from "~/stores/ui"
 
 import { IsSidebarVisibleKey } from "~/types/provides"
 
-import { useAnalytics } from "~/composables/use-analytics"
 import { useSearch } from "~/composables/use-search"
 
 import { ensureFocus } from "~/utils/reakit-utils/focus"
@@ -89,10 +90,10 @@ export default defineComponent({
 
     const isFetching = computed(() => mediaStore.fetchState.isFetching)
 
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
 
     const { updateSearchState, searchTerm, searchStatus } =
-      useSearch(sendCustomEvent)
+      useSearch($sendCustomEvent)
 
     const clearSearchTerm = () => {
       searchTerm.value = ""
@@ -112,7 +113,7 @@ export default defineComponent({
 
     const toggleSidebar = () => {
       const toState = isSidebarVisible?.value ? "closed" : "opened"
-      sendCustomEvent("TOGGLE_FILTER_SIDEBAR", {
+      $sendCustomEvent("TOGGLE_FILTER_SIDEBAR", {
         searchType: searchStore.searchType,
         toState,
       })

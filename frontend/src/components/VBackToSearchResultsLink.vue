@@ -15,9 +15,10 @@
 </template>
 
 <script lang="ts">
+import { useNuxtApp } from "#imports"
+
 import { defineComponent } from "vue"
 
-import { useAnalytics } from "~/composables/use-analytics"
 import { useSearchStore } from "~/stores/search"
 
 import VIcon from "~/components/VIcon/VIcon.vue"
@@ -46,11 +47,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
     const searchStore = useSearchStore()
 
     const handleClick = () => {
-      sendCustomEvent("BACK_TO_SEARCH", {
+      $sendCustomEvent("BACK_TO_SEARCH", {
         id: props.id,
         searchType: searchStore.searchType,
       })

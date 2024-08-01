@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useNuxtApp } from "#imports"
+
 import { computed, ref } from "vue"
 
 import { storeToRefs } from "pinia"
@@ -7,7 +9,6 @@ import { useUiStore } from "~/stores/ui"
 import { useSearchStore } from "~/stores/search"
 import { useMediaStore } from "~/stores/media"
 
-import { useAnalytics } from "~/composables/use-analytics"
 import { useExternalSources } from "~/composables/use-external-sources"
 
 import VExternalSourceList from "~/components/VExternalSearch/VExternalSourceList.vue"
@@ -32,13 +33,13 @@ const sectionRef = ref<HTMLElement | null>(null)
 const searchStore = useSearchStore()
 const uiStore = useUiStore()
 
-const { sendCustomEvent } = useAnalytics()
+const { $sendCustomEvent } = useNuxtApp()
 
 const mediaStore = useMediaStore()
 const { currentPage } = storeToRefs(mediaStore)
 
 const handleModalOpen = () => {
-  sendCustomEvent("VIEW_EXTERNAL_SOURCES", {
+  $sendCustomEvent("VIEW_EXTERNAL_SOURCES", {
     searchType: searchStore.searchType,
     query: searchStore.searchTerm,
     resultPage: currentPage.value || 1,

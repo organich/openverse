@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAnalytics } from "~/composables/use-analytics"
+import { useNuxtApp } from "#imports"
 
 import { useExternalSources } from "~/composables/use-external-sources"
 
@@ -18,9 +18,9 @@ const props = defineProps<{
 
 const { externalSources, externalSourcesType } = useExternalSources()
 
-const { sendCustomEvent } = useAnalytics()
+const { $sendCustomEvent } = useNuxtApp()
 const handleClick = (sourceName: string) => {
-  sendCustomEvent("SELECT_EXTERNAL_SOURCE", {
+  $sendCustomEvent("SELECT_EXTERNAL_SOURCE", {
     name: sourceName,
     mediaType: externalSourcesType.value,
     query: props.searchTerm,

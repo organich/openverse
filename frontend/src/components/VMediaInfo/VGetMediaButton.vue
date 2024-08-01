@@ -18,7 +18,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue"
 
-import { useAnalytics } from "~/composables/use-analytics"
+import { useNuxtApp } from "#app"
+
 import type { SupportedMediaType } from "~/constants/media"
 import type { Media } from "~/types/media"
 
@@ -38,10 +39,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
 
     const sendGetMediaEvent = () => {
-      sendCustomEvent("GET_MEDIA", {
+      $sendCustomEvent("GET_MEDIA", {
         id: props.media.id,
         provider: props.media.provider,
         mediaType: props.mediaType,

@@ -61,10 +61,11 @@
 </template>
 
 <script lang="ts">
+import { useNuxtApp } from "#imports"
+
 import { PropType, computed, defineComponent } from "vue"
 
 import { useSearchStore } from "~/stores/search"
-import { useAnalytics } from "~/composables/use-analytics"
 import { camelCase } from "~/utils/case"
 import type { AudioDetail, ImageDetail } from "~/types/media"
 
@@ -94,9 +95,9 @@ export default defineComponent({
     const searchStore = useSearchStore()
     const backToSearchPath = computed(() => searchStore.backToSearchPath)
 
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
     const handleBack = () => {
-      sendCustomEvent("GO_BACK_FROM_SENSITIVE_RESULT", {
+      $sendCustomEvent("GO_BACK_FROM_SENSITIVE_RESULT", {
         id: props.media.id,
         sensitivities: props.media.sensitivity.join(","),
       })

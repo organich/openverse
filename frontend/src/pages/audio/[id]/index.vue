@@ -19,7 +19,6 @@ import type { AudioDetail } from "~/types/media"
 import type { AudioInteractionData } from "~/types/analytics"
 import { validateUUID } from "~/utils/query-utils"
 
-import { useAnalytics } from "~/composables/use-analytics"
 import { useSensitiveMedia } from "~/composables/use-sensitive-media"
 import { useSingleResultStore } from "~/stores/media/single-result"
 import singleResultMiddleware from "~/middleware/single-result"
@@ -75,12 +74,12 @@ useHead(() => ({
   title: pageTitle.value,
 }))
 
-const { sendCustomEvent } = useAnalytics()
+const { $sendCustomEvent } = useNuxtApp()
 const sendAudioEvent = (
   data: Omit<AudioInteractionData, "component">,
   component: "AudioDetailPage" | "VRelatedAudio"
 ) => {
-  sendCustomEvent("AUDIO_INTERACTION", {
+  $sendCustomEvent("AUDIO_INTERACTION", {
     ...data,
     component,
   })

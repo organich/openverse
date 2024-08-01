@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { definePageMeta, navigateTo, useHead } from "#imports"
+import { definePageMeta, navigateTo, useHead, useNuxtApp } from "#imports"
 
 import { computed, onMounted, ref } from "vue"
 
@@ -9,7 +9,6 @@ import {
   isSupportedMediaType,
   SearchType,
 } from "~/constants/media"
-import { useAnalytics } from "~/composables/use-analytics"
 
 import { useMediaStore } from "~/stores/media"
 import { useSearchStore } from "~/stores/search"
@@ -32,7 +31,7 @@ const mediaStore = useMediaStore()
 const searchStore = useSearchStore()
 const uiStore = useUiStore()
 
-const { sendCustomEvent } = useAnalytics()
+const { $sendCustomEvent } = useNuxtApp()
 
 useHead({
   meta: [{ hid: "theme-color", name: "theme-color", content: "#ffe033" }],
@@ -62,7 +61,7 @@ const setSearchType = (type: SearchType) => {
 }
 
 const handleSearch = (searchTerm: string) => {
-  sendCustomEvent("SUBMIT_SEARCH", {
+  $sendCustomEvent("SUBMIT_SEARCH", {
     searchType: searchType.value,
     query: searchTerm,
   })

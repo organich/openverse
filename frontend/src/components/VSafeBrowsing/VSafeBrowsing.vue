@@ -46,13 +46,12 @@
 </template>
 
 <script lang="ts">
-import { useLocalePath } from "#imports"
+import { useLocalePath, useNuxtApp } from "#imports"
 
 import { computed, defineComponent } from "vue"
 
 import { useFeatureFlagStore } from "~/stores/feature-flag"
 import { useUiStore } from "~/stores/ui"
-import { useAnalytics } from "~/composables/use-analytics"
 import { ON, OFF } from "~/constants/feature-flag"
 
 import VCheckbox, { CheckboxAttrs } from "~/components/VCheckbox/VCheckbox.vue"
@@ -72,7 +71,7 @@ export default defineComponent({
     const sensitivityPath = computed(() => localePath("/sensitive-content"))
 
     const featureFlagStore = useFeatureFlagStore()
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
 
     let fetchSensitive = computed(() =>
       featureFlagStore.isOn("fetch_sensitive")
@@ -80,7 +79,7 @@ export default defineComponent({
     let setFetchSensitive = (data: Omit<CheckboxAttrs, "disabled">) => {
       const checked = data.checked ?? false
       featureFlagStore.toggleFeature("fetch_sensitive", checked ? ON : OFF)
-      sendCustomEvent("TOGGLE_FETCH_SENSITIVE", { checked })
+      $sendCustomEvent("TOGGLE_FETCH_SENSITIVE", { checked })
 
       if (!checked) {
         // If sensitive content is not fetched, there is nothing to blur/unblur.
@@ -94,7 +93,7 @@ export default defineComponent({
     let setBlurSensitive = (data: { checked?: boolean }) => {
       const checked = data.checked ?? false
       uiStore.setShouldBlurSensitive(checked)
-      sendCustomEvent("TOGGLE_BLUR_SENSITIVE", { checked })
+      $sendCustomEvent("TOGGLE_BLUR_SENSITIVE", { checked })
     }
 
     const toggles = [

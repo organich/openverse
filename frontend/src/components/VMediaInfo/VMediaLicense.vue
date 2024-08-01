@@ -47,12 +47,11 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "#imports"
+import { useI18n, useNuxtApp } from "#imports"
 
 import { computed, defineComponent, PropType } from "vue"
 
 import { getFullLicenseName, isLicense as isLicenseFn } from "~/utils/license"
-import { useAnalytics } from "~/composables/use-analytics"
 
 import type { License, LicenseVersion } from "~/constants/license"
 
@@ -78,7 +77,7 @@ export default defineComponent({
   },
   setup(props) {
     const i18n = useI18n({ useScope: "global" })
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
 
     const isLicense = computed(() => isLicenseFn(props.license))
     const headerText = computed(() => {
@@ -90,7 +89,7 @@ export default defineComponent({
     )
 
     const sendVisitLicensePage = () => {
-      sendCustomEvent("VISIT_LICENSE_PAGE", {
+      $sendCustomEvent("VISIT_LICENSE_PAGE", {
         license: props.license,
       })
     }

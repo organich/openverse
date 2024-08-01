@@ -18,7 +18,6 @@ import { computed, ref, watch } from "vue"
 import { IMAGE } from "~/constants/media"
 import { skipToContentTargetId } from "~/constants/window"
 import type { ImageDetail } from "~/types/media"
-import { useAnalytics } from "~/composables/use-analytics"
 import { useSensitiveMedia } from "~/composables/use-sensitive-media"
 import { useSingleResultPageMeta } from "~/composables/use-single-result-page-meta"
 
@@ -97,10 +96,10 @@ const showLoadingState = computed(() => {
   return isLoadingThumbnail.value
 })
 
-const { sendCustomEvent } = useAnalytics()
+const { $sendCustomEvent } = useNuxtApp()
 
 const handleRightClick = (id: string) => {
-  sendCustomEvent("RIGHT_CLICK_IMAGE", {
+  $sendCustomEvent("RIGHT_CLICK_IMAGE", {
     id,
   })
 }

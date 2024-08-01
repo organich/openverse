@@ -45,12 +45,11 @@
 </template>
 
 <script lang="ts">
-import { useLocalePath, useRouter } from "#imports"
+import { useLocalePath, useNuxtApp, useRouter } from "#imports"
 
 import { computed, defineComponent, PropType, ref } from "vue"
 
 import { useReducedMotion } from "~/composables/use-reduced-motion"
-import { useAnalytics } from "~/composables/use-analytics"
 import useResizeObserver from "~/composables/use-resize-observer"
 
 import VLink from "~/components/VLink.vue"
@@ -123,9 +122,9 @@ export default defineComponent({
     })
     const imageCount = computed(() => columnCount.value * rowCount)
 
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
     const handleClick = (id: string) => {
-      sendCustomEvent("CLICK_HOME_GALLERY_IMAGE", {
+      $sendCustomEvent("CLICK_HOME_GALLERY_IMAGE", {
         set: imageSet.value.key,
         id,
       })

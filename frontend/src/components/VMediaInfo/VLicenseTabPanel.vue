@@ -16,11 +16,11 @@
 </template>
 
 <script lang="ts">
+import { useNuxtApp } from "#imports"
+
 import { defineComponent, PropType } from "vue"
 
 import type { MediaType } from "~/constants/media"
-
-import { useAnalytics } from "~/composables/use-analytics"
 
 import VCopyButton from "~/components/VCopyButton.vue"
 import VTabPanel from "~/components/VTabs/VTabPanel.vue"
@@ -57,9 +57,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
     const handleCopy = () => {
-      sendCustomEvent("COPY_ATTRIBUTION", {
+      $sendCustomEvent("COPY_ATTRIBUTION", {
         id: props.mediaId,
         format: props.tab,
         mediaType: props.mediaType,

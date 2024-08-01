@@ -124,7 +124,7 @@
 </template>
 
 <script lang="ts">
-import { useRuntimeConfig } from "#imports"
+import { useNuxtApp, useRuntimeConfig } from "#imports"
 
 import { computed, defineComponent, PropType, ref } from "vue"
 
@@ -142,7 +142,6 @@ import {
 } from "~/constants/content-report"
 
 import type { AudioDetail, ImageDetail } from "~/types/media"
-import { useAnalytics } from "~/composables/use-analytics"
 
 import { mediaSlug } from "~/utils/query-utils"
 
@@ -197,10 +196,10 @@ export default defineComponent({
       () => selectedReason.value === OTHER && description.value.length < 20
     )
 
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
 
     const handleDmcaSubmit = () => {
-      sendCustomEvent("REPORT_MEDIA", {
+      $sendCustomEvent("REPORT_MEDIA", {
         id: props.media.id,
         mediaType: props.media.frontendMediaType,
         provider: props.media.provider,
@@ -232,7 +231,7 @@ export default defineComponent({
           }
         )
 
-        sendCustomEvent("REPORT_MEDIA", {
+        $sendCustomEvent("REPORT_MEDIA", {
           mediaType,
           reason,
           id: props.media.id,

@@ -56,13 +56,12 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "#imports"
+import { useI18n, useNuxtApp } from "#imports"
 
 import { defineComponent, onBeforeUnmount, onMounted, PropType, ref } from "vue"
 
 import { AttributionOptions, getAttribution } from "~/utils/attribution-html"
 import type { Media } from "~/types/media"
-import { useAnalytics } from "~/composables/use-analytics"
 
 import VTabs from "~/components/VTabs/VTabs.vue"
 import VTab from "~/components/VTabs/VTab.vue"
@@ -86,7 +85,7 @@ export default defineComponent({
     const getAttributionMarkup = (options?: AttributionOptions) =>
       getAttribution(props.media, i18n, options)
 
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
 
     const sendAnalyticsEvent = (event: MouseEvent) => {
       if (!event.currentTarget) {
@@ -94,7 +93,7 @@ export default defineComponent({
       }
 
       const url = (event.currentTarget as HTMLAnchorElement).href
-      sendCustomEvent("EXTERNAL_LINK_CLICK", { url })
+      $sendCustomEvent("EXTERNAL_LINK_CLICK", { url })
     }
 
     onMounted(() => {

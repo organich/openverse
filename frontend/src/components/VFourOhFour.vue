@@ -37,13 +37,12 @@
 </template>
 
 <script lang="ts">
-import { navigateTo, useHead } from "#imports"
+import { navigateTo, useHead, useNuxtApp } from "#imports"
 
 import { defineComponent } from "vue"
 
 import { useSearchStore } from "~/stores/search"
 
-import { useAnalytics } from "~/composables/use-analytics"
 import { ALL_MEDIA } from "~/constants/media"
 import { skipToContentTargetId } from "~/constants/window"
 
@@ -62,10 +61,10 @@ export default defineComponent({
   setup() {
     const searchStore = useSearchStore()
 
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
 
     const handleSearch = (searchTerm: string) => {
-      sendCustomEvent("SUBMIT_SEARCH", {
+      $sendCustomEvent("SUBMIT_SEARCH", {
         searchType: ALL_MEDIA,
         query: searchTerm,
       })

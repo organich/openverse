@@ -16,8 +16,6 @@ import {
 import { useSearchStore } from "~/stores/search"
 import { useFeatureFlagStore } from "~/stores/feature-flag"
 
-import { useAnalytics } from "~/composables/use-analytics"
-
 import { useComponentName } from "./use-component-name"
 
 const icons = {
@@ -37,9 +35,11 @@ const labels = {
 } as const
 
 export default function useSearchType() {
-  const { t } = useNuxtApp().$i18n
+  const {
+    $i18n: { t },
+    $sendCustomEvent,
+  } = useNuxtApp()
   const componentName = useComponentName()
-  const analytics = useAnalytics()
 
   const activeType = computed<SearchType>(() => {
     return useSearchStore().searchType
@@ -61,7 +61,7 @@ export default function useSearchType() {
       return
     }
 
-    analytics.sendCustomEvent("CHANGE_CONTENT_TYPE", {
+    $sendCustomEvent("CHANGE_CONTENT_TYPE", {
       previous: previousSearchType.value,
       next: searchType,
       component: componentName,

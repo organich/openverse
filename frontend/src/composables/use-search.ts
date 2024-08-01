@@ -1,4 +1,4 @@
-import { navigateTo } from "#imports"
+import { navigateTo, useNuxtApp } from "#imports"
 
 import { computed, watch } from "vue"
 
@@ -7,10 +7,9 @@ import { useMediaStore } from "~/stores/media"
 
 import { useI18nResultsCount } from "~/composables/use-i18n-utilities"
 import { useMatchSearchRoutes } from "~/composables/use-match-routes"
-import { useAnalytics } from "~/composables/use-analytics"
 
 export const useSearch = (
-  sendCustomEvent: ReturnType<typeof useAnalytics>["sendCustomEvent"]
+  $sendCustomEvent: ReturnType<typeof useNuxtApp>["$sendCustomEvent"]
 ) => {
   const mediaStore = useMediaStore()
   const searchStore = useSearchStore()
@@ -64,7 +63,7 @@ export const useSearch = (
       return
     }
 
-    sendCustomEvent("SUBMIT_SEARCH", {
+    $sendCustomEvent("SUBMIT_SEARCH", {
       searchType: searchStore.searchType,
       query: searchTerm.value,
     })

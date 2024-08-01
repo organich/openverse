@@ -22,9 +22,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue"
+import { useNuxtApp } from "#imports"
 
-import { useAnalytics } from "~/composables/use-analytics"
+import { computed, defineComponent, PropType } from "vue"
 
 import { useI18nResultsCount } from "~/composables/use-i18n-utilities"
 import type { SupportedMediaType } from "~/constants/media"
@@ -87,10 +87,10 @@ export default defineComponent({
     )
 
     const { activeType } = useSearchType()
-    const analytics = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
 
     const handleClick = () => {
-      analytics.sendCustomEvent("CHANGE_CONTENT_TYPE", {
+      $sendCustomEvent("CHANGE_CONTENT_TYPE", {
         previous: activeType.value,
         next: props.mediaType,
         component: "VContentLink",

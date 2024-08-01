@@ -63,9 +63,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, type PropType } from "vue"
+import { useNuxtApp } from "#imports"
 
-import { useAnalytics } from "~/composables/use-analytics"
+import { computed, defineComponent, type PropType } from "vue"
 
 import { useMediaStore } from "~/stores/media"
 import { useProviderStore } from "~/stores/provider"
@@ -181,7 +181,7 @@ export default defineComponent({
       )
     })
 
-    const { sendCustomEvent } = useAnalytics()
+    const { $sendCustomEvent } = useNuxtApp()
 
     const sendAnalyticsEvent = () => {
       if (props.collectionParams.collection === "tag") {
@@ -192,7 +192,7 @@ export default defineComponent({
         props.collectionParams.collection === "creator"
           ? "VISIT_CREATOR_LINK"
           : "VISIT_SOURCE_LINK"
-      sendCustomEvent(eventName, {
+      $sendCustomEvent(eventName, {
         url: url.value,
         source: props.collectionParams.source,
       })
