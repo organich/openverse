@@ -115,7 +115,7 @@ from types import MappingProxyType
 import lxml.html as html
 
 from common.constants import AUDIO, IMAGE
-from common.extensions import EXTENSIONS
+from common.extensions import extract_filetype
 from common.licenses import LicenseInfo, get_license_info
 from common.loader import provider_details as prov
 from providers.provider_api_scripts.provider_data_ingester import ProviderDataIngester
@@ -318,9 +318,9 @@ class WikimediaCommonsDataIngester(ProviderDataIngester):
             return None
 
         creator, creator_url = self.extract_creator_info(media_info)
-        title = self.extract_title(media_info)
+        filetype = extract_filetype(url, valid_media_type)
+        title = self.extract_title(media_info, filetype)
         filesize = media_info.get("size", 0)  # in bytes
-        filetype = self.extract_file_type(url, valid_media_type)
         meta_data = self.create_meta_data_dict(record)
 
         record_data = {
@@ -482,7 +482,7 @@ class WikimediaCommonsDataIngester(ProviderDataIngester):
         return media_info.get("extmetadata", {}).get(ext_key, {}).get("value")
 
     @staticmethod
-    def extract_title(media_info):
+    def extract_title(media_info, filetype):
         # Titles often have 'File:filename.jpg' form
         # We remove the 'File:' and extension from title
         title = WikimediaCommonsDataIngester.extract_ext_value(media_info, "ObjectName")
@@ -490,11 +490,8 @@ class WikimediaCommonsDataIngester(ProviderDataIngester):
             title = media_info.get("title")
         if title.startswith("File:"):
             title = title.replace("File:", "", 1)
-        last_dot_position = title.rfind(".")
-        if last_dot_position > 0:
-            possible_extension = title[last_dot_position:]
-            if possible_extension.lower() in {".png", ".jpg", ".jpeg", ".ogg", ".wav"}:
-                title = title[:last_dot_position]
+        if title.endswith(f".{filetype}"):
+            return title[: -len(filetype) - 1]
         return title
 
     @staticmethod
@@ -532,28 +529,6 @@ class WikimediaCommonsDataIngester(ProviderDataIngester):
 
         categories_list = categories_string.split("|")
         return categories_list
-
-    @staticmethod
-    def extract_file_type(url, media_type):
-        """
-        Extract the filetype from extension in the media url.
-
-        In case of images, we check if the filetype is in the list of valid image
-        types, so we can ignore other media types considered as videos (eg: .ogv).
-        """
-        image_extensions = EXTENSIONS.get(IMAGE, {})
-        if filetype := url.split(".")[-1]:
-            filetype = filetype.lower()
-            if (
-                media_type == IMAGE and filetype in image_extensions
-            ) or media_type == AUDIO:
-                return filetype
-
-            logger.warning(
-                f"Invalid filetype for `{media_type}` media type: {filetype}"
-            )
-
-        return None
 
     @staticmethod
     def extract_license_info(media_info) -> LicenseInfo | None:
